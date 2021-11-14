@@ -27,7 +27,8 @@ jobs:
       - name: Install dependencies
         shell: msys2 {0}
         run: |
-          pacman -Sy mingw-w64-${{matrix.platform}}-make
+          pacman -S --needed --noconfirm\
+            mingw-w64-${{matrix.platform}}-make
 
       - name: Checkout sources
         shell: msys2 {0}
