@@ -13,11 +13,10 @@ jobs:
     strategy:
       matrix:
         include:
-          - { platform: i686, suffix: 32 }
-          - { platform: x86_64, suffix: 64 }
-        build_type:
-          - release
-          - debug
+          - { platform: i686, suffix: 32, build_type: release }
+          - { platform: x86_64, suffix: 64, build_type: release }
+          - { platform: i686, suffix: 32, build_type: debug }
+          - { platform: x86_64, suffix: 64, build_type: debug }
     steps:
       - uses: actions/checkout@v2
 
@@ -26,32 +25,32 @@ jobs:
           msystem: mingw64
 
       - name: Install dependencies
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           pacman -Sy mingw-w64-${{matrix.platform}}-make
 
       - name: Checkout sources
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           git clone --depth https://github.com/bkaradzic/bgfx.git
           git clone --depth https://github.com/bkaradzic/bx.git
           git clone --depth https://github.com/bkaradzic/bimg.git
 
       - name: Compile BX
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bx
           make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
 
       - name: Compile BIMG
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bimg
           make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
 
 
       - name: Compile BGFX
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bgfx
           make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
