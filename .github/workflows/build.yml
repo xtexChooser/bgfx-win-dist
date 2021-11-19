@@ -19,27 +19,19 @@ jobs:
         build_type:
           - release
           - debug
-#        include:
-#          - { platform: i686, suffix: 32, build_type: release }
-#          - { platform: x86_64, suffix: 64, build_type: release }
-#          - { platform: i686, suffix: 32, build_type: debug }
-#          - { platform: x86_64, suffix: 64, build_type: debug }
     steps:
       - uses: actions/checkout@v2
 
       - uses: msys2/setup-msys2@v2
         with:
           msystem: mingw64
-
-      - name: Install dependencies
-        shell: mingw64 {0}
-        run: |
-          pacman -S --needed --noconfirm\
+          update: true
+          install: >-
             mingw-w64-${{matrix.platform.mingw}}-make\
             mingw-w64-${{matrix.platform.mingw}}-gcc
 
       - name: Dump build environment
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           echo || Windows Environent Variable
           set
@@ -53,20 +45,20 @@ jobs:
           git clone --depth 1 https://github.com/bkaradzic/bimg.git
 
       - name: Compile BX
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bx
-          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
       - name: Compile BIMG
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bimg
-          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
 
       - name: Compile BGFX
-        shell: mingw64 {0}
+        shell: msys2 {0}
         run: |
           cd bgfx
-          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
