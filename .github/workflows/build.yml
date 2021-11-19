@@ -32,14 +32,14 @@ jobs:
           msystem: mingw64
 
       - name: Install dependencies
-        shell: msys2 {0}
+        shell: mingw64 {0}
         run: |
           pacman -S --needed --noconfirm\
             mingw-w64-${{matrix.platform.mingw}}-make\
             mingw-w64-${{matrix.platform.mingw}}-gcc
 
       - name: Dump build environment
-        shell: msys2 {0}
+        shell: mingw64 {0}
         run: |
           echo || Windows Environent Variable
           set
@@ -53,20 +53,20 @@ jobs:
           git clone --depth 1 https://github.com/bkaradzic/bimg.git
 
       - name: Compile BX
-        shell: msys2 {0}
+        shell: mingw64 {0}
         run: |
           cd bx
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
       - name: Compile BIMG
-        shell: msys2 {0}
+        shell: mingw64 {0}
         run: |
           cd bimg
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
 
       - name: Compile BGFX
-        shell: msys2 {0}
+        shell: mingw64 {0}
         run: |
           cd bgfx
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
