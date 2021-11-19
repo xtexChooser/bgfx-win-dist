@@ -20,22 +20,24 @@ jobs:
           - release
           - debug
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout build sources
+        uses: actions/checkout@v2
 
-      - uses: msys2/setup-msys2@v2
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
         with:
           msystem: mingw64
           update: true
           install: >-
-            mingw-w64-${{matrix.platform.mingw}}-make\
-            mingw-w64-${{matrix.platform.mingw}}-gcc
+            make
+            mingw-w64-x86_64-gcc
 
       - name: Dump build environment
         shell: msys2 {0}
         run: |
-          echo || Windows Environent Variable
+          echo - Windows Environent Variable
           set
-          echo || Bash Environent Variable
+          echo - Bash Environent Variable
           export
 
       - name: Checkout sources
@@ -46,19 +48,26 @@ jobs:
 
       - name: Compile BX
         shell: msys2 {0}
+        env:
+          MINGW: /mingw64/
         run: |
           cd bx
-          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
       - name: Compile BIMG
         shell: msys2 {0}
         run: |
           cd bimg
-          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
 
       - name: Compile BGFX
         shell: msys2 {0}
         run: |
           cd bgfx
-          mingw-make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          path: '*/.build/win64_mingw-gcc/bin'
