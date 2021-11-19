@@ -14,8 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-#          - { mingw: i686, bits: 32 }
-          - { mingw: x86_64, bits: 64 }
+#          - { name: i686, bits: 32 }
+          - { name: x86_64, bits: 64 }
         build_type:
           - release
           - debug
@@ -71,7 +71,20 @@ jobs:
           cd bgfx
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
-      - name: Upload artifacts
+      - name: Upload executable artifacts
         uses: actions/upload-artifact@v2
         with:
-          path: '*/.build/win64_mingw-gcc/bin'
+          name: ${{matrix.build_type}}${{matrix.platform.name}}-executable
+          path: '*/.build/win64_mingw-gcc/bin/*.exe'
+
+      - name: Upload static library artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.build_type}}${{matrix.platform.name}}-staticlib
+          path: '*/.build/win64_mingw-gcc/bin/*.a'
+
+      - name: Upload object artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: ${{matrix.build_type}}${{matrix.platform.name}}-object
+          path: '*/.build/win64_mingw-gcc/objects/'
