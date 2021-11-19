@@ -35,12 +35,13 @@ jobs:
         shell: msys2 {0}
         run: |
           pacman -S --needed --noconfirm\
+            mingw-w64-${{matrix.platform.mingw}}-git\
             mingw-w64-${{matrix.platform.mingw}}-make\
             mingw-w64-${{matrix.platform.mingw}}-gcc
 
       - name: Dump build environment
         shell: msys2 {0}
-        run:
+        run: |
           echo || Windows Environent Variable
           set
           echo || Bash Environent Variable
