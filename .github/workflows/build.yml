@@ -48,9 +48,9 @@ jobs:
 
       - name: Checkout sources
         run: |
-          git clone --depth https://github.com/bkaradzic/bgfx.git
-          git clone --depth https://github.com/bkaradzic/bx.git
-          git clone --depth https://github.com/bkaradzic/bimg.git
+          git clone --depth 1 https://github.com/bkaradzic/bgfx.git
+          git clone --depth 1 https://github.com/bkaradzic/bx.git
+          git clone --depth 1 https://github.com/bkaradzic/bimg.git
 
       - name: Compile BX
         shell: msys2 {0}
