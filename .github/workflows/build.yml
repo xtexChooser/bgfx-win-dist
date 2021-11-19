@@ -12,11 +12,17 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        include:
-          - { platform: i686, suffix: 32, build_type: release }
-          - { platform: x86_64, suffix: 64, build_type: release }
-          - { platform: i686, suffix: 32, build_type: debug }
-          - { platform: x86_64, suffix: 64, build_type: debug }
+        platform:
+          - { mingw: i686, bits: 32 }
+          - { mingw: x86_64, bits: 64 }
+        build_type:
+          - release
+          - debug
+#        include:
+#          - { platform: i686, suffix: 32, build_type: release }
+#          - { platform: x86_64, suffix: 64, build_type: release }
+#          - { platform: i686, suffix: 32, build_type: debug }
+#          - { platform: x86_64, suffix: 64, build_type: debug }
     steps:
       - uses: actions/checkout@v2
 
@@ -28,7 +34,8 @@ jobs:
         shell: msys2 {0}
         run: |
           pacman -S --needed --noconfirm\
-            mingw-w64-${{matrix.platform}}-make
+            mingw-w64-${{matrix.platform.mingw}}-make
+            mingw-w64-${{matrix.platform.mingw}}-gcc
 
       - name: Checkout sources
         shell: msys2 {0}
@@ -41,17 +48,17 @@ jobs:
         shell: msys2 {0}
         run: |
           cd bx
-          make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
       - name: Compile BIMG
         shell: msys2 {0}
         run: |
           cd bimg
-          make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
 
       - name: Compile BGFX
         shell: msys2 {0}
         run: |
           cd bgfx
-          make mingw-gcc-${{matrix.build_type}}${{matrix.suffix}}
+          make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
