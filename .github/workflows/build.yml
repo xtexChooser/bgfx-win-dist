@@ -14,7 +14,7 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - { mingw: i686, bits: 32 }
+#          - { mingw: i686, bits: 32 }
           - { mingw: x86_64, bits: 64 }
         build_type:
           - release
@@ -56,6 +56,8 @@ jobs:
 
       - name: Compile BIMG
         shell: msys2 {0}
+        env:
+          MINGW: /mingw64/
         run: |
           cd bimg
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
@@ -63,6 +65,8 @@ jobs:
 
       - name: Compile BGFX
         shell: msys2 {0}
+        env:
+          MINGW: /mingw64/
         run: |
           cd bgfx
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
