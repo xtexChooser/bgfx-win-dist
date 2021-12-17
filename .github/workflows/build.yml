@@ -69,7 +69,6 @@ jobs:
           cd bimg
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
-
       - name: Compile BGFX
         shell: msys2 {0}
         env:
@@ -81,23 +80,23 @@ jobs:
       - name: Upload executable artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.build_type}}${{matrix.platform.name}}-executable
+          name: ${{matrix.build_type}}-${{matrix.platform.name}}-executable
           path: '*/.build/win64_mingw-gcc/bin/*.exe'
 
       - name: Upload static library artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.build_type}}${{matrix.platform.name}}-staticlib
+          name: ${{matrix.build_type}}-${{matrix.platform.name}}-staticlib
           path: '*/.build/win64_mingw-gcc/bin/*.a'
 
       - name: Upload object artifacts
         uses: actions/upload-artifact@v2
         with:
-          name: ${{matrix.build_type}}${{matrix.platform.name}}-object
+          name: ${{matrix.build_type}}-${{matrix.platform.name}}-object
           path: '*/.build/win64_mingw-gcc/objs/'
 
   release:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     needs:
       - build
     if: '!cancelled()'
@@ -105,7 +104,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v2.0.10
         with:
-          path: /
+          path: /artifacts
 
       - name: Get date
         run: echo "DATE=$(date -u +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
@@ -121,7 +120,7 @@ jobs:
         with:
           name: "${{ format('{0} #{1}', env.DATE, github.run_number) }}"
           tag_name: ${{ format('build-{0}', github.run_number) }}
-          files: /
+          files: /artifacts
           body: |
             ${{ format('Auto-build #{1} at {0} UTC', env.DATE, github.run_number) }}
 
