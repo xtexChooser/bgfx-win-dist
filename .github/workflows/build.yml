@@ -96,7 +96,7 @@ jobs:
           path: '*/.build/win64_mingw-gcc/objs/'
 
   release:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs:
       - build
     if: '!cancelled()'
