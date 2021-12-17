@@ -88,3 +88,40 @@ jobs:
         with:
           name: ${{matrix.build_type}}${{matrix.platform.name}}-object
           path: '*/.build/win64_mingw-gcc/objs/'
+
+  release:
+    runs-on: ubuntu-latest
+    needs:
+      - build
+    if: '!cancelled()'
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v2.0.10
+        with:
+          path: /
+
+      - name: Get date
+        run: echo "DATE=$(date -u +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
+
+      - name: Create tag
+        uses: anothrNick/github-tag-action@1.36.0
+        env:
+          CUSTOM_TAG: ${{ format('build-{0}', github.run_number) }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create release
+        uses: softprops/action-gh-release@v0.1.13
+        with:
+          name: "${{ format('{0} #{1}', env.DATE, github.run_number) }}"
+          tag_name: ${{ format('build-{0}', github.run_number) }}
+          files: /
+          body: |
+            ${{ format('Auto-build #{1} at {0} UTC', env.DATE, github.run_number) }}
+
+      - name: Delete older releases
+        uses: dev-drprasad/delete-older-releases@v0.2.0
+        with:
+          keep_latest: 30
+          delete_tags: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
