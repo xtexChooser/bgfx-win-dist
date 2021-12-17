@@ -46,6 +46,13 @@ jobs:
           git clone --depth 1 https://github.com/bkaradzic/bx.git
           git clone --depth 1 https://github.com/bkaradzic/bimg.git
 
+      - name: Cache build files
+        uses: actions/cache@v2
+        with:
+          key: ${{ runner.os }}-${{ hashFiles('lockfile.txt') }}-${{matrix.build_type}}-${{matrix.platform.name}}
+          path: |
+            */.build
+
       - name: Compile BX
         shell: msys2 {0}
         env:
