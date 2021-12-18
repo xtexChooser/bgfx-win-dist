@@ -77,6 +77,10 @@ jobs:
           cd bgfx
           make mingw-gcc-${{matrix.build_type}}${{matrix.platform.bits}}
 
+      - name: List files
+        shell: msys2 {0}
+        run: ls -R
+
       - name: Upload executable artifacts
         uses: actions/upload-artifact@v2
         with:
@@ -93,7 +97,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: ${{matrix.build_type}}-${{matrix.platform.name}}-object
-          path: '*/.build/win64_mingw-gcc/objs/'
+          path: '*/.build/win64_mingw-gcc/obj/'
 
   release:
     runs-on: ubuntu-latest
@@ -101,12 +105,15 @@ jobs:
       - build
     if: '!cancelled()'
     steps:
+      - name: Checkout build sources
+        uses: actions/checkout@v2
+
       - name: Download artifacts
         uses: actions/download-artifact@v2.0.10
         with:
           path: artifacts
 
-      - name: List artifacts
+      - name: List files
         working-directory: artifacts
         run: ls -R
 
