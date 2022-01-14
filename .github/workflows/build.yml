@@ -151,7 +151,7 @@ jobs:
           title: Auto Build ${{ '#' }}${{ github.run_number}} Failed
           assignees: ${{ github.actor }}
           labels: build-fail
-          body: Auto build failed on ${{ github.ref_name }}(${{ github.sha }}), triggered by ${{ github.actor }}. Current run is ${{ github.run_id }}/${{ github.run_number }}
+          body: Auto build(for '${{ github.event_name }}') failed on ${{ github.ref_name }}(${{ github.sha }}), triggered by @${{ github.actor }}. Current run is [${{ github.run_number }}/${{ github.run_id }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
   cleanup:
     runs-on: ubuntu-latest
