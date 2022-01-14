@@ -103,7 +103,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - build
-    if: '!cancelled()'
+    if: '!cancelled() && success()'
     steps:
       - name: Checkout build sources
         uses: actions/checkout@v2
@@ -134,10 +134,40 @@ jobs:
           body: |
             ${{ format('Auto-build #{1} at {0} UTC', env.DATE, github.run_number) }}
 
+  create-issue:
+    runs-on: ubuntu-latest
+    needs:
+      - release
+      - cleanup
+    if: 'always()'
+    steps:
+      - name: Checkout build sources
+        uses: actions/checkout@v2
+
+      - uses: nashmaniac/create-issue-action@v1.1
+        name: Create Issue Action
+        with:
+          token: ${{ github.token }}
+          title: \#${{ github.run_number}} Auto Build Failed
+          assignees: ${{ github.actor }}
+          labels: build-fail
+          body: Auto build failed on ${{ github.ref_name }}(${{ github.sha }}), triggered by ${{ github.actor }}. Current run is ${{ github.run_id }}/${{ github.run_number }}
+
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout build sources
+        uses: actions/checkout@v2
+
+      - uses: lee-dohm/close-matching-issues@v2
+        with:
+          token: ${{ github.token }}
+          query: 'label:build-fail'
+
       - name: Delete older releases
         uses: dev-drprasad/delete-older-releases@v0.2.0
         with:
           keep_latest: 15
           delete_tags: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ github.token }}
