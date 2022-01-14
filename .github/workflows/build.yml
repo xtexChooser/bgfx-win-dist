@@ -148,7 +148,7 @@ jobs:
         name: Create Issue Action
         with:
           token: ${{ github.token }}
-          title: \#${{ github.run_number}} Auto Build Failed
+          title: Auto Build ${{ '#' }}${{ github.run_number}} Failed
           assignees: ${{ github.actor }}
           labels: build-fail
           body: Auto build failed on ${{ github.ref_name }}(${{ github.sha }}), triggered by ${{ github.actor }}. Current run is ${{ github.run_id }}/${{ github.run_number }}
@@ -159,7 +159,8 @@ jobs:
       - name: Checkout build sources
         uses: actions/checkout@v2
 
-      - uses: lee-dohm/close-matching-issues@v2
+      - name: Delete older build failure issues
+        uses: lee-dohm/close-matching-issues@v2
         with:
           token: ${{ github.token }}
           query: 'label:build-fail'
