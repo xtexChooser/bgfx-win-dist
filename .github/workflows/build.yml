@@ -144,8 +144,8 @@ jobs:
       - name: Checkout build sources
         uses: actions/checkout@v2
 
-      - uses: nashmaniac/create-issue-action@v1.1
-        name: Create Issue Action
+      - name: Create issue
+        uses: nashmaniac/create-issue-action@v1.1
         with:
           token: ${{ github.token }}
           title: Auto Build ${{ '#' }}${{ github.run_number}} Failed
@@ -155,6 +155,7 @@ jobs:
 
   cleanup:
     runs-on: ubuntu-latest
+    if: 'always()'
     steps:
       - name: Checkout build sources
         uses: actions/checkout@v2
